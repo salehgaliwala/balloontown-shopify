@@ -4,6 +4,7 @@ import Header from './Header';
 import Footer from './Footer';
 
 function App() {
+  document.title = 'Balloon Town App';
   return (
     <div className="App">
       <Header />
