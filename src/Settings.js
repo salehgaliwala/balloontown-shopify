@@ -14,7 +14,7 @@ function App() {
   useEffect(() => {
     async function fetchSettings() {
       try {
-        const response = await fetch('http://localhost:3001/getSettings'); // Modify this endpoint as needed
+        const response = await fetch('https://balloontown-node.vercel.app/getSettings'); // Modify this endpoint as needed
         const data = await response.json();
 
         if (response.ok) {
@@ -47,7 +47,7 @@ function App() {
     shippingData: shippingData,
   };
   try {
-    const response = await fetch('http://localhost:3001/saveSettings', {
+    const response = await fetch('https://balloontown-node.vercel.app/saveSettings', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
