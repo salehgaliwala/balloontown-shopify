@@ -70,7 +70,7 @@ function App() {
     dateFields:dateFields,
   };
   try {
-    const response = await fetch('https://balloontown-node.vercel.app//saveSettings', {
+    const response = await fetch('https://balloontown-node.vercel.app/saveSettings', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
