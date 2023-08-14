@@ -5,11 +5,26 @@ import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
  const [accessKey, setAccessKey] = useState('');
-  const [token, setToken] = useState('');
-  const [shippingData, setShippingData] = useState([
+ const [token, setToken] = useState('');
+ const [storeAddress, setStoreAddress] = useState('');
+ const [shippingData, setShippingData] = useState([
     { distanceFrom: '', distanceTo: '', shippingRate: '' },
   ]);
+ const [selectedDays, setSelectedDays] = useState({
+    sunday: true,
+    monday: false,
+    tuesday: false,
+    wednesday: false,
+    thursday: false,
+    friday: false,
+    saturday: false,
+  });
 
+  const [selectedPeriods, setSelectedPeriods] = useState({
+    am: false,
+    pm: false,
+  });
+ const [dateFields, setDateFields] = useState([]);
 
   useEffect(() => {
     async function fetchSettings() {
@@ -20,7 +35,11 @@ function App() {
         if (response.ok) {
           setAccessKey(data.access_key);
           setToken(data.token);
+          setStoreAddress(data.storeAddress || ''); // Initialize storeAddress
           setShippingData(data.shippingData || []);
+          setSelectedDays(data.selectedDays || {});
+          setSelectedPeriods(data.selectedPeriods || {});
+          setDateFields(data.dateFields || {});
         } else {
           toast.error('Error fetching settings', {
             position: 'top-center',
@@ -38,16 +57,20 @@ function App() {
 
     fetchSettings();
   }, []);
-
+  console.log(selectedDays);
   const handleSubmit = async (e) => {
   e.preventDefault();
   const formData = {
     access_key: accessKey,
     token: token,
     shippingData: shippingData,
+    storeAddress: storeAddress,
+    selectedDays: selectedDays,
+    selectedPeriods: selectedPeriods,
+    dateFields:dateFields,
   };
   try {
-    const response = await fetch('https://balloontown-node.vercel.app/saveSettings', {
+    const response = await fetch('https://balloontown-node.vercel.app//saveSettings', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -77,18 +100,46 @@ function App() {
 };
 const handleAddShippingData = () => {
     setShippingData([...shippingData, { distanceFrom: '', distanceTo: '', shippingRate: '' }]);
-  };
+};
 
-  const handleShippingDataChange = (index, field, value) => {
+const handleShippingDataChange = (index, field, value) => {
     const updatedShippingData = [...shippingData];
     updatedShippingData[index][field] = value;
     setShippingData(updatedShippingData);
+};
+
+const handleDayCheckboxChange = (day) => {
+    setSelectedDays((prevSelectedDays) => ({
+      ...prevSelectedDays,
+      [day]: !prevSelectedDays[day],
+    }));
+  };
+const handlePeriodCheckboxChange = (period) => {
+    setSelectedPeriods((prevSelectedPeriods) => ({
+      ...prevSelectedPeriods,
+      [period]: !prevSelectedPeriods[period],
+    }));
   };
 
+ 
+  const handleAddDateField = () => {
+    setDateFields([...dateFields, '']);
+  };
+
+  const handleDateFieldChange = (index, value) => {
+    const updatedDateFields = [...dateFields];
+    updatedDateFields[index] = value;
+    setDateFields(updatedDateFields);
+  };
+
+  const handleRemoveDateField = (index) => {
+    const updatedDateFields = dateFields.filter((_, i) => i !== index);
+    setDateFields(updatedDateFields);
+  };
   return (
     <div className="container mt-5">
       <div className="row justify-content-center">
-        <div className="col-md-6">  
+        <div className="col-md-10">  
           <div className="card">
             <div className="card-body">
              
@@ -118,8 +169,19 @@ const handleAddShippingData = () => {
                     onChange={(e) => setToken(e.target.value)}
                   />
                 </div>
+                <div className="mb-3">
+                  <label htmlFor="storeAddress" className="form-label">
+                    Store Address:
+                  </label>
+                  <textarea
+                    className="form-control"
+                    id="storeAddress"
+                    value={storeAddress}
+                    onChange={(e) => setStoreAddress(e.target.value)}
+                  />
+                </div>
                 <div>
-                  <h4>Shipping Data</h4>
+                  <h4>Shipping Rates By Distance</h4>
                   {shippingData.map((data, index) => (
                     <div key={index} className="mb-3">
                       <div className="row">
@@ -161,6 +223,80 @@ const handleAddShippingData = () => {
                   ))}
                   <button type="button" className="btn btn-primary" onClick={handleAddShippingData}>
                     Add
+                  </button>
+                </div>
+                <hr />
+                <div className="mb-3 mt-5">
+                  <h2>Delivery Date Settings</h2>
+                  <h4>Block Weekdays</h4>
+                
+                  {Object.keys(selectedDays).map((day) => (
+                    <div key={day} className="form-check-inline">
+                      <input
+                        type="checkbox"
+                        className="form-check-input"
+                        id={day}
+                        checked={selectedDays[day]}
+                        onChange={() => handleDayCheckboxChange(day)}
+                      />
+                      <label className="form-check-label" htmlFor={day}>
+                        {day.charAt(0).toUpperCase() + day.slice(1)}
+                      </label>
+                    </div>
+                  ))}
+                </div>
+                <div className="mb-3">
+                  <h4>Block Same Day Period</h4>
+                  {Object.keys(selectedPeriods).map((period) => (
+                    <div key={period} className="form-check form-check-inline">
+                      <input
+                        type="checkbox"
+                        className="form-check-input"
+                        id={period}
+                        checked={selectedPeriods[period]}
+                        onChange={() => handlePeriodCheckboxChange(period)}
+                      />
+                      <label className="form-check-label" htmlFor={period}>
+                        {period.toUpperCase()}
+                      </label>
+                    </div>
+                  ))}
+                </div>
+                 
+                <div className="mb-3">
+                  <h4>Block Dates</h4>
+                  <div className="row">
+                    <div className="col-6 offset-md-3">
+                      {dateFields.map((date, index) => (
+                    
+                        <div className="row mb-5">
+                          <div className="col-8">
+                          
+                              <input
+                                type="date"
+                                className="form-control"
+                                value={date}
+                                onChange={(e) => handleDateFieldChange(index, e.target.value)}
+                              />
+                          </div>
+                           <div className="col-4">
+                             <button
+                        type="button"
+                        className="btn btn-danger"
+                        onClick={() => handleRemoveDateField(index)}
+                      >
+                        Remove
+                      </button>
+                          </div>
+                          
+                     
+                      
+                    </div>  
+                    ))}
+                 </div>
+                 </div>
+                  <button type="button" className="btn btn-primary" onClick={handleAddDateField}>
+                    Add Date Field
                   </button>
                 </div>
                 <button type="submit" className="btn btn-primary">

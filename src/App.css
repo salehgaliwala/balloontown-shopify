@@ -36,3 +36,15 @@
     transform: rotate(360deg);
   }
 }
+
+.form-check-inline {
+  display: inline-block;
+  margin-right: 15px;
+}
+
+/* Add this rule to horizontally align checkbox labels */
+.form-check-inline label {
+  display: inline-block;
+  margin-right: 5px;
+  margin-left:5px
+}
