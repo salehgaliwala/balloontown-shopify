@@ -25,7 +25,12 @@ function App() {
     pm: false,
   });
  const [dateFields, setDateFields] = useState([]);
+ //Login system
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [loggedIn, setLoggedIn] = useState(false); // New state variable
 
+  
   useEffect(() => {
     async function fetchSettings() {
       try {
@@ -57,7 +62,41 @@ function App() {
 
     fetchSettings();
   }, []);
-  console.log(selectedDays);
+
+  const handleLogin = async() => {
+    try {
+      const response = await fetch('https://balloontown-node.vercel.app/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setLoggedIn(true); // Set loggedIn to true upon successful login
+        toast.success(data.message, {
+          position: 'top-center',
+          autoClose: 3000,
+        });
+      } else {
+        toast.error(data.message, {
+          position: 'top-center',
+          autoClose: 3000,
+        });
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      toast.error('An error occurred', {
+        position: 'top-center',
+        autoClose: 3000,
+      });
+    }
+    
+  }
+  
   const handleSubmit = async (e) => {
   e.preventDefault();
   const formData = {
@@ -136,6 +175,7 @@ const handlePeriodCheckboxChange = (period) => {
     const updatedDateFields = dateFields.filter((_, i) => i !== index);
     setDateFields(updatedDateFields);
   };
+  if(loggedIn){
   return (
     <div className="container mt-5">
       <div className="row justify-content-center">
@@ -311,6 +351,61 @@ const handlePeriodCheckboxChange = (period) => {
     </div>
     
   );
+}
+else
+{
+  return (
+    <div className="container mt-5">
+      <div className="row justify-content-center">
+        <div className="col-md-6">
+          <div className="card">
+            <div className="card-body">
+              <h3 className="card-title">Login Form</h3>
+              {loggedIn ? (
+                /* Render content when logged in */
+                <div>
+                  <h4>Welcome, {username}!</h4>
+                  {/* Add your content here */}
+                </div>
+              ) : (
+                /* Render login form when not logged in */
+                <div>
+                  <div className="mb-3">
+                    <label htmlFor="username" className="form-label">
+                      Username:
+                    </label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      id="username"
+                      value={username}
+                      onChange={(e) => setUsername(e.target.value)}
+                    />
+                  </div>
+                  <div className="mb-3">
+                    <label htmlFor="password" className="form-label">
+                      Password:
+                    </label>
+                    <input
+                      type="password"
+                      className="form-control"
+                      id="password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                    />
+                  </div>
+                  <button type="button" className="btn btn-primary" onClick={handleLogin}>
+                    Login
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+      <ToastContainer />
+    </div>);
+}
 }
 
 export default App;
