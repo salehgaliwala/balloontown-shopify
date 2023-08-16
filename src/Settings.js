@@ -226,7 +226,7 @@ const handlePeriodCheckboxChange = (period) => {
                     <div key={index} className="mb-3">
                       <div className="row">
                         <div className="col-4">
-                           <label>Distance From:</label>
+                           <label>Distance From (Km):</label>
                       <input
                         type="text"
                         className="form-control"
@@ -237,7 +237,7 @@ const handlePeriodCheckboxChange = (period) => {
                       />
                         </div>
                      <div className="col-4">
-                      <label>Distance To:</label>
+                      <label>Distance To (Km):</label>
                       <input
                         type="text"
                         className="form-control"
@@ -248,7 +248,7 @@ const handlePeriodCheckboxChange = (period) => {
                       />
                       </div>
                       <div className="col-4">
-                      <label>Shipping Rate:</label>
+                      <label>Shipping Rate (AU$):</label>
                       <input
                         type="text"
                         className="form-control"
