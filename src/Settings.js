@@ -29,7 +29,8 @@ function App() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loggedIn, setLoggedIn] = useState(false); // New state variable
-
+  const [fromDate, setFromDate] = useState(''); // New state for 'from date'
+  const [toDate, setToDate] = useState('');     // New state for 'to date'
   
   useEffect(() => {
     async function fetchSettings() {
@@ -45,6 +46,8 @@ function App() {
           setSelectedDays(data.selectedDays || {});
           setSelectedPeriods(data.selectedPeriods || {});
           setDateFields(data.dateFields || {});
+          setFromDate(data.fromDate || {});
+          setToDate(data.toDate || {});
         } else {
           toast.error('Error fetching settings', {
             position: 'top-center',
@@ -107,6 +110,8 @@ function App() {
     selectedDays: selectedDays,
     selectedPeriods: selectedPeriods,
     dateFields:dateFields,
+    fromDate: fromDate, // Include 'fromDate' in formData
+    toDate: toDate,     // Include 'toDate' in formData
   };
   try {
     const response = await fetch('https://balloontown-node.vercel.app/saveSettings', {
@@ -137,15 +142,7 @@ function App() {
     });
   }
 };
-const handleAddShippingData = () => {
-    setShippingData([...shippingData, { distanceFrom: '', distanceTo: '', shippingRate: '' }]);
-};
 
-const handleShippingDataChange = (index, field, value) => {
-    const updatedShippingData = [...shippingData];
-    updatedShippingData[index][field] = value;
-    setShippingData(updatedShippingData);
-};
 
 const handleDayCheckboxChange = (day) => {
     setSelectedDays((prevSelectedDays) => ({
@@ -184,7 +181,7 @@ const handlePeriodCheckboxChange = (period) => {
             <div className="card-body">
              
               <form onSubmit={handleSubmit}>
-                <h3 className="card-title">Shopify Keys</h3>
+                <h4 className="card-title">Shopify Keys</h4>
                 <div className="mb-3">
                   <label htmlFor="accessKey" className="form-label">
                     Access Key:
@@ -220,56 +217,12 @@ const handlePeriodCheckboxChange = (period) => {
                     onChange={(e) => setStoreAddress(e.target.value)}
                   />
                 </div>
-                <div>
-                  <h4>Shipping Rates By Distance</h4>
-                  {shippingData.map((data, index) => (
-                    <div key={index} className="mb-3">
-                      <div className="row">
-                        <div className="col-4">
-                           <label>Distance From (Km):</label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        value={data.distanceFrom}
-                        onChange={(e) =>
-                          handleShippingDataChange(index, 'distanceFrom', e.target.value)
-                        }
-                      />
-                        </div>
-                     <div className="col-4">
-                      <label>Distance To (Km):</label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        value={data.distanceTo}
-                        onChange={(e) =>
-                          handleShippingDataChange(index, 'distanceTo', e.target.value)
-                        }
-                      />
-                      </div>
-                      <div className="col-4">
-                      <label>Shipping Rate (AU$):</label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        value={data.shippingRate}
-                        onChange={(e) =>
-                          handleShippingDataChange(index, 'shippingRate', e.target.value)
-                        }
-                      />
-                    </div>
-                    </div>
-                    </div>
-                  ))}
-                  <button type="button" className="btn btn-primary" onClick={handleAddShippingData}>
-                    Add
-                  </button>
-                </div>
+                
                 <hr />
                 <div className="mb-3 mt-5">
                   <h2>Delivery Date Settings</h2>
-                  <h4>Block Weekdays</h4>
-                
+                  <br/><br />
+                  <h4>Block Weekdays</h4>                
                   {Object.keys(selectedDays).map((day) => (
                     <div key={day} className="form-check-inline">
                       <input
@@ -286,6 +239,7 @@ const handlePeriodCheckboxChange = (period) => {
                   ))}
                 </div>
                 <div className="mb-3">
+                   <hr />
                   <h4>Block Same Day Period</h4>
                   {Object.keys(selectedPeriods).map((period) => (
                     <div key={period} className="form-check form-check-inline">
@@ -302,7 +256,7 @@ const handlePeriodCheckboxChange = (period) => {
                     </div>
                   ))}
                 </div>
-                 
+                 <hr /> 
                 <div className="mb-3">
                   <h4>Block Dates</h4>
                   <div className="row">
@@ -339,6 +293,43 @@ const handlePeriodCheckboxChange = (period) => {
                     Add Date Field
                   </button>
                 </div>
+                         <hr />
+        <div className="mb-3">
+          <div className='row'>
+            <div className='col-6 offset-md-3'>
+             
+              <div className='row mb-5 mt-5'>
+                 <h4>Block Date Range</h4>
+                 <div className='col-6'>
+                         <label htmlFor="fromDate" className="form-label">
+                          From Date:
+                        </label>
+                        <input
+                          type="date"
+                          className="form-control"
+                          id="fromDate"
+                          value={fromDate}
+                          onChange={(e) => setFromDate(e.target.value)}
+                        />
+                  </div>  
+                  <div className='col-6'>
+                    <label htmlFor="toDate" className="form-label">
+                      To Date:
+                    </label>
+                    <input
+                      type="date"
+                      className="form-control"
+                      id="toDate"
+                      value={toDate}
+                      onChange={(e) => setToDate(e.target.value)}
+                    />
+                  </div>     
+
+              </div>
+            </div>
+          </div>
+          
+        </div>
                 <button type="submit" className="btn btn-primary">
                   Save Settings
                 </button>
