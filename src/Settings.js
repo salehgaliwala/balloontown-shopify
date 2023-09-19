@@ -31,6 +31,8 @@ function App() {
   const [loggedIn, setLoggedIn] = useState(false); // New state variable
   const [fromDate, setFromDate] = useState(''); // New state for 'from date'
   const [toDate, setToDate] = useState('');     // New state for 'to date'
+  const [chargeNote, setChargeNote] = useState(false);
+
   
   useEffect(() => {
     async function fetchSettings() {
@@ -112,6 +114,7 @@ function App() {
     dateFields:dateFields,
     fromDate: fromDate, // Include 'fromDate' in formData
     toDate: toDate,     // Include 'toDate' in formData
+    chargeNote: chargeNote, 
   };
   try {
     const response = await fetch('https://balloontown-node.vercel.app/saveSettings', {
@@ -330,6 +333,30 @@ const handlePeriodCheckboxChange = (period) => {
           </div>
           
         </div>
+        <div className="mb-3">
+          <div className='row'>
+            <div className='col-6 offset-md-4'>
+             
+              <div className='row mb-5 mt-5'>
+            <h4>Delivery Note Charges</h4>
+            
+            <div className="form-check-inline">
+              <input
+                type="checkbox"
+                className="form-check-input"
+                id="chargeNote"
+                checked={chargeNote}
+                onChange={() => setChargeNote(!chargeNote)}
+              />
+              <label className="form-check-label" htmlFor="chargeNote">
+                Charge Note
+              </label>
+            </div>
+        </div>
+         </div>
+          </div>
+           </div>
+        
                 <button type="submit" className="btn btn-primary">
                   Save Settings
                 </button>
