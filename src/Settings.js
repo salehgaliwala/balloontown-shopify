@@ -335,7 +335,7 @@ const handlePeriodCheckboxChange = (period) => {
         </div>
         <div className="mb-3">
           <div className='row'>
-            <div className='col-6 offset-md-4'>
+            <div className='col-6 offset-md-3'>
              
               <div className='row mb-5 mt-5'>
             <h4>Delivery Note Charges</h4>
