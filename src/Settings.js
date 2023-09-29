@@ -50,7 +50,7 @@ function App() {
           setDateFields(data.dateFields || {});
           setFromDate(data.fromDate || {});
           setToDate(data.toDate || {});
-          setChargeNote(data.chargeNote || {});
+          setChargeNote(data.chargeNote);
           
         } else {
           toast.error('Error fetching settings', {
