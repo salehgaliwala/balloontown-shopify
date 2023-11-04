@@ -32,7 +32,7 @@ function App() {
   const [fromDate, setFromDate] = useState(''); // New state for 'from date'
   const [toDate, setToDate] = useState('');     // New state for 'to date'
   const [chargeNote, setChargeNote] = useState(false);
-
+  const [deliveryNote, setdeliveryNote] = useState('');
   
   useEffect(() => {
     async function fetchSettings() {
@@ -51,6 +51,7 @@ function App() {
           setFromDate(data.fromDate || {});
           setToDate(data.toDate || {});
           setChargeNote(data.chargeNote);
+          setdeliveryNote(data.deliveryNote);
           
         } else {
           toast.error('Error fetching settings', {
@@ -117,6 +118,7 @@ function App() {
     fromDate: fromDate, // Include 'fromDate' in formData
     toDate: toDate,     // Include 'toDate' in formData
     chargeNote: chargeNote, 
+    deliveryNote: deliveryNote,
   };
   try {
     const response = await fetch('https://balloontown-node.vercel.app/saveSettings', {
@@ -220,6 +222,17 @@ const handlePeriodCheckboxChange = (period) => {
                     id="storeAddress"
                     value={storeAddress}
                     onChange={(e) => setStoreAddress(e.target.value)}
+                  />
+                </div>
+                <div className="mb-3">
+                  <label htmlFor="deliveryNote" className="form-label">
+                    Store Delivery Note:
+                  </label>
+                  <textarea
+                    className="form-control"
+                    id="deliveryNote"
+                    value={deliveryNote}
+                    onChange={(e) => setdeliveryNote(e.target.value)}
                   />
                 </div>
                 
