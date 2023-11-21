@@ -49,3 +49,34 @@
   margin-left:5px
 }
 h4{text-decoration: underline;}
+/* ReviewsTable.css */
+
+.reviews-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.reviews-table th,
+.reviews-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+.reviews-table th {
+  background-color: #f2f2f2;
+}
+
+.reviews-table button {
+  padding: 5px 10px;
+  background-color: #f44336;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.reviews-table button:hover {
+  background-color: #d32f2f;
+}

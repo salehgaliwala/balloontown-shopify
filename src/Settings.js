@@ -33,7 +33,8 @@ function App() {
   const [toDate, setToDate] = useState('');     // New state for 'to date'
   const [chargeNote, setChargeNote] = useState(false);
   const [deliveryNote, setdeliveryNote] = useState('');
-  
+  const [reviews, setReviews] = useState([]);
+
   useEffect(() => {
     async function fetchSettings() {
       try {
@@ -68,9 +69,50 @@ function App() {
       }
     }
 
+    async function fetchreviews(){
+
+      fetch('https://balloontown.com.au/cdn/shop/t/2/assets/reviews.json?v')
+      .then(response => response.json())
+      .then(data => setReviews(data))
+      .catch(error => console.error('Error fetching data:', error));
+    }
+    
     fetchSettings();
+    fetchreviews();
+    
   }, []);
 
+const handleDelete = async (orderId) => {
+    // Find the index of the item to be deleted
+    const indexToDelete = reviews.findIndex(review => review.orderId === orderId);
+
+    // Make sure the item is found before attempting to delete
+    if (indexToDelete !== -1) {
+      // Send the index to the Node.js script
+      try {
+        const response = await fetch('/api/deleteReview', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ indexToDelete }),
+        });
+
+        if (response.ok) {
+          // If the server acknowledges the deletion, update the local state
+          const updatedReviews = [...reviews];
+          updatedReviews.splice(indexToDelete, 1);
+          setReviews(updatedReviews);
+        } else {
+          console.error('Failed to delete the review on the server.');
+        }
+      } catch (error) {
+        console.error('Error while communicating with the server:', error);
+      }
+    } else {
+      console.error('Review not found for deletion.');
+    }
+  }
   const handleLogin = async() => {
     try {
       const response = await fetch('https://balloontown-node.vercel.app/login', {
@@ -380,6 +422,37 @@ const handlePeriodCheckboxChange = (period) => {
           </div>
         </div>
       </div>
+      <div className="mb-3">
+          <div className='row'>
+            <div className='col-6 offset-md-3'>
+              <h4>Reviews Queue</h4>
+                         <table className="reviews-table">
+      <thead>
+        <tr>
+          <th>Order ID</th>
+          <th>Email</th>
+          <th>Name</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {reviews.map((review) => (
+          <tr key={review.order_number}>
+            <td>{review.order_number}</td>
+            <td>{review.contact_email}</td>
+            <td>{review.customer.first_name} {review.customer.last_name}</td>
+            <td>
+              <button onClick={() => handleDelete(review.order_number)}>
+                Delete
+              </button>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+            </div>
+          </div>  
+      </div>
         <ToastContainer />
     </div>
     
@@ -434,6 +507,7 @@ else
               )}
             </div>
           </div>
+          
         </div>
       </div>
       <ToastContainer />
