@@ -90,7 +90,7 @@ const handleDelete = async (orderId) => {
     if (indexToDelete !== -1) {
       // Send the index to the Node.js script
       try {
-        const response = await fetch('/api/deleteReview', {
+        const response = await fetch('https://balloontown-node.vercel.app/saveReviews', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
