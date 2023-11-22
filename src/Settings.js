@@ -35,6 +35,8 @@ function App() {
   const [deliveryNote, setdeliveryNote] = useState('');
   const [reviews, setReviews] = useState([]);
 
+  
+
   useEffect(() => {
     async function fetchSettings() {
       try {
@@ -70,8 +72,8 @@ function App() {
     }
 
     async function fetchreviews(){
-
-      fetch('https://balloontown.com.au/cdn/shop/t/2/assets/reviews.json?v')
+      const randomQueryParam = `?${Math.random()}`;
+      fetch('https://balloontown.com.au/cdn/shop/t/2/assets/reviews.json?v=${randomQueryParam}')
       .then(response => response.json())
       .then(data => setReviews(data))
       .catch(error => console.error('Error fetching data:', error));
