@@ -86,7 +86,7 @@ function App() {
 
 const handleDelete = async (orderId) => {
     // Find the index of the item to be deleted
-    const indexToDelete = reviews.findIndex(review => review.orderId === orderId);
+    const indexToDelete = reviews.findIndex(review => review.order_number === orderId);
 
     // Make sure the item is found before attempting to delete
     if (indexToDelete !== -1) {
