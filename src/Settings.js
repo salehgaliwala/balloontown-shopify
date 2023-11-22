@@ -73,7 +73,7 @@ function App() {
 
     async function fetchreviews(){
       const randomQueryParam = `?${Math.random()}`;
-      fetch('https://balloontown.com.au/cdn/shop/t/2/assets/reviews.json?v=${randomQueryParam}')
+      fetch(`https://balloontown.com.au/cdn/shop/t/2/assets/reviews.json?v=${randomQueryParam}`)
       .then(response => response.json())
       .then(data => setReviews(data))
       .catch(error => console.error('Error fetching data:', error));
